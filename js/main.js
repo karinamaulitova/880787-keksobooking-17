@@ -1,15 +1,22 @@
 'use strict';
 
+var SIMILAR_PINS_NEARBY = 8;
+var AVATAR_LINK_TEMPLATE = 'img/avatars/user{{xx}}.png';
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+
+var formatNumber = function (num) {
+  return num < 10 ? '0' + num.toString() : num.toString();
+};
+
 
 var getSimilarAds = function (blockWidth) {
 
   var similarAds = [];
 
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < SIMILAR_PINS_NEARBY; i++) {
     var ad = {
       'author': {
-        'avatar': 'img/avatars/user{{xx}}.png'.replace('{{xx}}', '0' + (i + 1).toString())
+        'avatar': AVATAR_LINK_TEMPLATE.replace('{{xx}}', formatNumber(i + 1))
       },
       'offer': {
         'type': OFFER_TYPES[i % 4]
@@ -27,7 +34,11 @@ var getSimilarAds = function (blockWidth) {
   return similarAds;
 };
 
-document.querySelector('.map').classList.remove('map--faded');
+var activateMap = function () {
+  document.querySelector('.map').classList.remove('map--faded');
+};
+
+activateMap();
 
 var mapPins = document.querySelector('.map__pins');
 var mapPin = document.querySelector('#pin')
@@ -36,14 +47,15 @@ var mapPin = document.querySelector('#pin')
 
 var ads = getSimilarAds(1200);
 
-for (var i = 0; i < ads.length; i++) {
+ads.forEach(function (ad) {
   var adsElement = mapPin.cloneNode(true);
 
-  adsElement.style.left = ads[i].location.x - 20 + 'px';
-  adsElement.style.top = ads[i].location.y - 40 + 'px';
+  adsElement.style.left = ad.location.x - 20 + 'px';
+  adsElement.style.top = ad.location.y - 40 + 'px';
 
-  adsElement.querySelector('img').src = ads[i].author.avatar;
+  adsElement.querySelector('img').src = ad.author.avatar;
   adsElement.querySelector('img').alt = 'Заголовок объявления';
 
   mapPins.appendChild(adsElement);
-}
+});
+
