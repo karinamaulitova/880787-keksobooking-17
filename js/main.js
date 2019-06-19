@@ -53,6 +53,7 @@ var activateAdForm = function () {
 };
 
 
+/*
 var drawSimilarAds = function () {
 
   var mapPins = document.querySelector('.map__pins');
@@ -75,6 +76,7 @@ var drawSimilarAds = function () {
   });
 
 };
+*/
 
 var activateKeksobooking = function () {
   activateMap();
