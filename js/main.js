@@ -1,5 +1,6 @@
 'use strict';
 
+/*
 var SIMILAR_PINS_NEARBY = 8;
 var AVATAR_LINK_TEMPLATE = 'img/avatars/user{{xx}}.png';
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
@@ -36,24 +37,7 @@ var getSimilarAds = function (blockWidth) {
   return similarAds;
 };
 
-var activateMap = function () {
-  document.querySelector('.map').classList.remove('map--faded');
 
-  document.querySelectorAll('.map__filter').forEach(function (element) {
-    element.disabled = false;
-  });
-
-  document.querySelector('.map__features').disabled = false;
-};
-
-var activateAdForm = function () {
-  document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
-    element.disabled = false;
-  });
-};
-
-
-/*
 var drawSimilarAds = function () {
 
   var mapPins = document.querySelector('.map__pins');
@@ -77,6 +61,23 @@ var drawSimilarAds = function () {
 
 };
 */
+
+var activateMap = function () {
+  document.querySelector('.map').classList.remove('map--faded');
+
+  document.querySelectorAll('.map__filter').forEach(function (element) {
+    element.disabled = false;
+  });
+
+  document.querySelector('.map__features').disabled = false;
+};
+
+var activateAdForm = function () {
+  document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
+    element.disabled = false;
+  });
+};
+
 
 var activateKeksobooking = function () {
   activateMap();
