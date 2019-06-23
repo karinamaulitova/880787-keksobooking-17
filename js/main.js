@@ -1,6 +1,6 @@
 'use strict';
 
-/*
+
 var SIMILAR_PINS_NEARBY = 8;
 var AVATAR_LINK_TEMPLATE = 'img/avatars/user{{xx}}.png';
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
@@ -60,7 +60,7 @@ var drawSimilarAds = function () {
   });
 
 };
-*/
+
 
 var activateMap = function () {
   document.querySelector('.map').classList.remove('map--faded');
@@ -81,6 +81,7 @@ var activateAdForm = function () {
 
 var activateKeksobooking = function () {
   activateMap();
+  drawSimilarAds();
   activateAdForm();
 };
 
