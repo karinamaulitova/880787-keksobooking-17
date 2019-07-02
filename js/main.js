@@ -37,6 +37,7 @@ var getSimilarAds = function (blockWidth) {
   return similarAds;
 };
 
+var similarAdsElements = [];
 
 var drawSimilarAds = function () {
 
@@ -57,8 +58,16 @@ var drawSimilarAds = function () {
     adsElement.querySelector('img').alt = 'Заголовок объявления';
 
     mapPins.appendChild(adsElement);
+    similarAdsElements.push(adsElement);
   });
 
+};
+
+var removeSimilarAds = function () {
+  similarAdsElements.forEach(function (element) {
+    element.remove();
+  });
+  similarAdsElements = [];
 };
 
 
@@ -72,17 +81,42 @@ var activateMap = function () {
   document.querySelector('.map__features').disabled = false;
 };
 
+var deactivateMap = function () {
+  document.querySelector('.map').classList.add('map--faded');
+  document.querySelectorAll('.map__filter').forEach(function (element) {
+    element.disabled = true;
+  });
+
+  document.querySelector('.map__features').disabled = true;
+};
+
 var activateAdForm = function () {
   document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
     element.disabled = false;
   });
 };
 
+var deactivateAdForm = function () {
+  document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
+    element.disabled = true;
+  });
+};
+
+
+var keksobookingActive = false;
 
 var activateKeksobooking = function () {
   activateMap();
   drawSimilarAds();
   activateAdForm();
+  keksobookingActive = true;
+};
+
+var deActivateKeksobooking = function () {
+  deactivateMap();
+  removeSimilarAds();
+  deactivateAdForm();
+  keksobookingActive = false;
 };
 
 var setAddress = function (x, y) {
@@ -98,6 +132,18 @@ var defaultAddressY = mapPinMain.offsetTop + mapPinMainHeight / 2;
 setAddress(defaultAddressX, defaultAddressY);
 
 mapPinMain.addEventListener('mouseup', function (evt) {
-  activateKeksobooking();
   setAddress(evt.clientX, evt.clientY);
+
+  if (!keksobookingActive) {
+    activateKeksobooking();
+  }
+
+});
+
+var resetButton = document.querySelector('.ad-form__reset');
+resetButton.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  if (keksobookingActive) {
+    deActivateKeksobooking();
+  }
 });
