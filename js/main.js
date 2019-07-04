@@ -163,12 +163,11 @@ mapPinMain.addEventListener('mousedown', function (evt) {
 
 
     var rightBorder = mapRect.width - mapPinMainWidth;
-    var bottomBorder = mapRect.height - mapPinMainHeight;
 
-    if (newTopCoordinate > bottomBorder) {
-      newTopCoordinate = bottomBorder;
-    } else if (newTopCoordinate < 0) {
-      newTopCoordinate = 0;
+    if (newTopCoordinate > 630) {
+      newTopCoordinate = 630;
+    } else if (newTopCoordinate < 130) {
+      newTopCoordinate = 130;
     }
 
     if (newLeftCoordinate > rightBorder) {
