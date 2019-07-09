@@ -2,14 +2,13 @@
 (function (MAP_PIN_WIDTH, MAP_PIN_HEIGHT) {
   var similarAdsElements = [];
 
-  window.drawSimilarAds = function () {
+  window.drawSimilarAds = function (ads) {
 
     var mapPins = document.querySelector('.map__pins');
     var mapPin = document.querySelector('#pin')
       .content
       .querySelector('.map__pin');
 
-    var ads = window.getSimilarAds(1200);
 
     ads.forEach(function (ad) {
       var adsElement = mapPin.cloneNode(true);
