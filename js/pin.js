@@ -1,13 +1,18 @@
 'use strict';
 
-(function (setAddress, activateKeksobooking) {
+(function (activateKeksobooking) {
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPinMainRect = mapPinMain.getBoundingClientRect();
   var mapPinMainWidth = mapPinMainRect.width;
   var mapPinMainHeight = mapPinMainRect.height + 20;
   var defaultAddressX = mapPinMain.offsetLeft + mapPinMainWidth / 2;
   var defaultAddressY = mapPinMain.offsetTop + mapPinMainHeight / 2;
+  var setAddress = function (x, y) {
+    var addressInput = document.querySelector('#address');
+    addressInput.value = x + ',' + y;
+  };
   setAddress(defaultAddressX, defaultAddressY);
+
 
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -69,4 +74,4 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-})(window.setAddress, window.activateKeksobooking);
+})(window.activateKeksobooking);
