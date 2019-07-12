@@ -7,16 +7,22 @@
 
   window.activateKeksobooking = function () {
     if (!keksobookingActive) {
-      window.activateMap();
-      window.activateAdForm();
-      keksobookingActive = true;
       window.load('https://js.dump.academy/keksobooking/data', function (ads) {
+        window.activateMap();
+        window.activateAdForm();
+        window.setSimilarAdsFromServer(ads);
         window.drawSimilarAds(ads);
+        keksobookingActive = true;
       }, function (message) {
         var errorTemplate = document.querySelector('#error').content.querySelector('.error');
         var errorElement = errorTemplate.cloneNode(true);
         var messageElement = errorElement.querySelector('.error__message');
         messageElement.innerHTML = message;
+        var errorButton = errorElement.querySelector('.error__button');
+        errorButton.addEventListener('click', function () {
+          errorElement.remove();
+          window.activateKeksobooking();
+        });
 
         document.querySelector('main').appendChild(errorElement);
       });
