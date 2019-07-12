@@ -11,7 +11,7 @@
         window.activateMap();
         window.activateAdForm();
         window.setSimilarAdsFromServer(ads);
-        window.drawSimilarAds(ads);
+        window.drawSimilarAds(ads.slice(0, 5));
         keksobookingActive = true;
       }, function (message) {
         var errorTemplate = document.querySelector('#error').content.querySelector('.error');
