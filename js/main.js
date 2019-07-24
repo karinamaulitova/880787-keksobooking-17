@@ -1,5 +1,7 @@
 'use strict';
 
+var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
+
 
 (function () {
 
@@ -7,7 +9,7 @@
 
   window.activateKeksobooking = function () {
     if (!keksobookingActive) {
-      window.load('https://js.dump.academy/keksobooking/data', function (ads) {
+      window.load(SERVER_URL, function (ads) {
         window.activateMap();
         window.activateAdForm();
         window.setSimilarAdsFromServer(ads);
@@ -17,7 +19,7 @@
         var errorTemplate = document.querySelector('#error').content.querySelector('.error');
         var errorElement = errorTemplate.cloneNode(true);
         var messageElement = errorElement.querySelector('.error__message');
-        messageElement.innerHTML = message;
+        messageElement.textContent = message;
         var errorButton = errorElement.querySelector('.error__button');
         errorButton.addEventListener('click', function () {
           errorElement.remove();
