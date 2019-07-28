@@ -2,37 +2,19 @@
 window.MAP_PIN_WIDTH = 50;
 window.MAP_PIN_HEIGHT = 70;
 
+
 (function (MAP_PIN_WIDTH, MAP_PIN_HEIGHT) {
   var similarAdsElements = [];
   var similarAdsFromServer = [];
+  var currentlyOpenPopupElement = null;
+  var ESC_KEYCODE = 27;
 
-  window.setSimilarAdsFromServer = function (ads) {
-    similarAdsFromServer = ads;
-  };
+  var mapBlock = document.querySelector('.map');
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
 
+  var showMoreInfoPopup = function (moreInfoAd) {
+    closePopup();
 
-  window.drawSimilarAds = function (ads) {
-
-    var mapPins = document.querySelector('.map__pins');
-    var mapPin = document.querySelector('#pin')
-      .content
-      .querySelector('.map__pin');
-
-
-    ads.forEach(function (ad) {
-      var adsElement = mapPin.cloneNode(true);
-
-      adsElement.style.left = ad.location.x - MAP_PIN_WIDTH / 2 + 'px';
-      adsElement.style.top = ad.location.y - MAP_PIN_HEIGHT + 'px';
-
-      adsElement.querySelector('img').src = ad.author.avatar;
-      adsElement.querySelector('img').alt = 'Заголовок объявления';
-
-      mapPins.appendChild(adsElement);
-      similarAdsElements.push(adsElement);
-    });
-
-    var moreInfoAd = ads[0];
     var cardElement = document.querySelector('#card')
       .content
       .querySelector('.map__card');
@@ -97,9 +79,59 @@ window.MAP_PIN_HEIGHT = 70;
 
     moreInfoAdElement.querySelector('.popup__avatar').src = moreInfoAd.author.avatar;
 
-    var mapBlock = document.querySelector('.map');
-    var mapFiltersContainer = document.querySelector('.map__filters-container');
+    moreInfoAdElement.querySelector('.popup__close').addEventListener('click', closePopup);
+
     mapBlock.insertBefore(moreInfoAdElement, mapFiltersContainer);
+    currentlyOpenPopupElement = moreInfoAdElement;
+  };
+
+  var closePopup = function () {
+    if (currentlyOpenPopupElement) {
+      mapBlock.removeChild(currentlyOpenPopupElement);
+      currentlyOpenPopupElement = null;
+    }
+  };
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closePopup();
+    }
+  });
+
+  window.setSimilarAdsFromServer = function (ads) {
+    similarAdsFromServer = ads;
+  };
+
+
+  window.drawSimilarAds = function (ads) {
+
+    var mapPins = document.querySelector('.map__pins');
+    var mapPin = document.querySelector('#pin')
+      .content
+      .querySelector('.map__pin');
+
+
+    ads.forEach(function (ad) {
+      var adsElement = mapPin.cloneNode(true);
+
+      adsElement.style.left = ad.location.x - MAP_PIN_WIDTH / 2 + 'px';
+      adsElement.style.top = ad.location.y - MAP_PIN_HEIGHT + 'px';
+
+      adsElement.querySelector('img').src = ad.author.avatar;
+      adsElement.querySelector('img').alt = 'Заголовок объявления';
+
+      adsElement.addEventListener('click', function () {
+        showMoreInfoPopup(ad);
+      });
+
+      mapPins.appendChild(adsElement);
+      similarAdsElements.push(adsElement);
+    });
+
+    var moreInfoAd = ads[0];
+
+    showMoreInfoPopup(moreInfoAd);
+
   };
 
   window.removeSimilarAds = function () {
