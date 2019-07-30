@@ -152,6 +152,8 @@ window.MAP_PIN_HEIGHT = 70;
   };
 
   window.deactivateMap = function () {
+    closePopup();
+
     document.querySelector('.map').classList.add('map--faded');
     document.querySelectorAll('.map__filter').forEach(function (element) {
       element.disabled = true;

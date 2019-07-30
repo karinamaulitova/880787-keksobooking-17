@@ -1,25 +1,29 @@
 'use strict';
-(function (deActivateKeksobooking) {
+(function () {
+  var form = document.querySelector('.ad-form');
+  var SEND_URL = 'https://js.dump.academy/keksobooking';
+  var ESC_KEYCODE = 27;
 
   window.activateAdForm = function () {
     document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
       element.disabled = false;
     });
-    document.querySelector('.ad-form').classList.remove('ad-form--disabled');
+    form.classList.remove('ad-form--disabled');
   };
 
   window.deactivateAdForm = function () {
+    form.reset();
     document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
       element.disabled = true;
     });
-    document.querySelector('.ad-form').classList.add('ad-form--disabled');
+    form.classList.add('ad-form--disabled');
   };
 
 
   var resetButton = document.querySelector('.ad-form__reset');
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    deActivateKeksobooking();
+    window.deActivateKeksobooking();
   });
 
   var typeSelect = document.querySelector('#type');
@@ -73,4 +77,77 @@
 
   capacitySelect.addEventListener('change', validateNumberOfRooms);
 
-})(window.deActivateKeksobooking);
+  validateNumberOfRooms();
+
+
+  var handelFormSubmitSuccess = function () {
+    window.deActivateKeksobooking();
+    var successSubmitTemplate = document.querySelector('#success')
+      .content
+      .querySelector('.success');
+    var successSubmitElement = successSubmitTemplate.cloneNode(true);
+
+    document.body.appendChild(successSubmitElement);
+
+    var closeSuccessPopup = function () {
+      successSubmitElement.remove();
+      document.removeEventListener('keydown', handleDocumentKeydown);
+      document.removeEventListener('click', handleDocumentClick);
+    };
+
+    var handleDocumentKeydown = function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        closeSuccessPopup();
+      }
+    };
+
+    var handleDocumentClick = function (evt) {
+      evt.preventDefault();
+      closeSuccessPopup();
+    };
+
+    document.addEventListener('keydown', handleDocumentKeydown);
+    document.addEventListener('click', handleDocumentClick);
+  };
+
+  var handleFormSubmitError = function () {
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+    var errorElement = errorTemplate.cloneNode(true);
+    var errorButton = errorElement.querySelector('.error__button');
+    errorButton.textContent = 'Закрыть';
+
+
+    var closeErrorPopup = function () {
+      errorElement.remove();
+      document.removeEventListener('keydown', handleDocumentKeydown);
+      document.removeEventListener('click', handleDocumentClick);
+    };
+
+    var handleDocumentKeydown = function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        closeErrorPopup();
+      }
+    };
+
+    var handleDocumentClick = function (evt) {
+      evt.preventDefault();
+      closeErrorPopup();
+    };
+
+    errorButton.addEventListener('click', function () {
+      closeErrorPopup();
+    });
+
+    document.addEventListener('keydown', handleDocumentKeydown);
+    document.addEventListener('click', handleDocumentClick);
+
+    document.querySelector('main').appendChild(errorElement);
+  };
+
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    var formData = new FormData(form);
+    window.sendFormData(SEND_URL, formData, handelFormSubmitSuccess, handleFormSubmitError);
+  });
+
+})();

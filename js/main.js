@@ -36,6 +36,7 @@ var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
       window.deactivateMap();
       window.removeSimilarAds();
       window.deactivateAdForm();
+      window.resetMapPin();
       keksobookingActive = false;
     }
   };
