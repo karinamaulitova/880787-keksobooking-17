@@ -57,4 +57,20 @@
   timeOutSelect.addEventListener('change', function () {
     timeInSelect.value = timeOutSelect.value;
   });
+
+  var capacitySelect = document.querySelector('#capacity');
+  var numberOfRoomsSelect = document.querySelector('#room_number');
+
+  var validateNumberOfRooms = function () {
+    if (numberOfRoomsSelect.value < capacitySelect.value) {
+      numberOfRoomsSelect.setCustomValidity('Слишком мало комнат');
+    } else {
+      numberOfRoomsSelect.setCustomValidity('');
+    }
+  };
+
+  numberOfRoomsSelect.addEventListener('change', validateNumberOfRooms);
+
+  capacitySelect.addEventListener('change', validateNumberOfRooms);
+
 })(window.deActivateKeksobooking);
