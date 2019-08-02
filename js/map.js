@@ -130,7 +130,9 @@ window.MAP_PIN_HEIGHT = 70;
 
     var moreInfoAd = ads[0];
 
-    showMoreInfoPopup(moreInfoAd);
+    if (moreInfoAd) {
+      showMoreInfoPopup(moreInfoAd);
+    }
 
   };
 
@@ -162,14 +164,99 @@ window.MAP_PIN_HEIGHT = 70;
     document.querySelector('.map__features').disabled = true;
   };
 
+  var debounce = function (f, ms) {
+
+    var isCooldown = false;
+
+    return function () {
+      if (isCooldown) {
+        return;
+      }
+
+      f.apply(null, arguments);
+
+      isCooldown = true;
+
+      setTimeout(function () {
+        isCooldown = false;
+      }, ms);
+    };
+
+  };
+
+
   var mapFilterHousingType = document.querySelector('#housing-type');
-  mapFilterHousingType.addEventListener('change', function (evt) {
+  var mapFilterPrice = document.querySelector('#housing-price');
+  var mapFilterHousingRooms = document.querySelector('#housing-rooms');
+  var mapFilterHousingGuests = document.querySelector('#housing-guests');
+  var mapFilterWifi = document.querySelector('#filter-wifi');
+  var mapFilterDishwasher = document.querySelector('#filter-dishwasher');
+  var mapFilterParking = document.querySelector('#filter-parking');
+  var mapFilterWasher = document.querySelector('#filter-washer');
+  var mapFilterElevator = document.querySelector('#filter-elevator');
+  var mapFilterConditioner = document.querySelector('#filter-conditioner');
+
+  var applyFilters = function () {
     window.removeSimilarAds();
-    var filterValue = evt.target.value;
-    var filteredAds = similarAdsFromServer.filter(function (ad) {
-      return ad.offer.type === filterValue || filterValue === 'any';
-    }).slice(0, 5);
+    closePopup();
+    var housingTypeValue = mapFilterHousingType.value;
+    var priceValue = mapFilterPrice.value;
+    var housingRoomsValue = mapFilterHousingRooms.value;
+    var housingGuestsValue = mapFilterHousingGuests.value;
+    var wifiValue = mapFilterWifi.checked;
+    var dishwasherValue = mapFilterDishwasher.checked;
+    var parkingValue = mapFilterParking.checked;
+    var washerValue = mapFilterWasher.checked;
+    var elevatorValue = mapFilterElevator.checked;
+    var conditionerValue = mapFilterConditioner.checked;
+    var filteredAds = similarAdsFromServer
+      .filter(function (ad) {
+        return ad.offer.type === housingTypeValue || housingTypeValue === 'any';
+      }).filter(function (ad) {
+        switch (priceValue) {
+          case 'low':
+            return ad.offer.price < 10000;
+          case 'middle':
+            return ad.offer.price >= 10000 && ad.offer.price < 50000;
+          case 'high':
+            return ad.offer.price >= 50000;
+          case 'any':
+          default:
+            return true;
+        }
+      }).filter(function (ad) {
+        return ad.offer.rooms === Number(housingRoomsValue) || housingRoomsValue === 'any';
+      }).filter(function (ad) {
+        return ad.offer.guests === Number(housingGuestsValue) || housingGuestsValue === 'any';
+      }).filter(function (ad) {
+        return ad.offer.features.includes('wifi') || !wifiValue;
+      }).filter(function (ad) {
+        return ad.offer.features.includes('dishwasher') || !dishwasherValue;
+      }).filter(function (ad) {
+        return ad.offer.features.includes('parking') || !parkingValue;
+      }).filter(function (ad) {
+        return ad.offer.features.includes('washer') || !washerValue;
+      }).filter(function (ad) {
+        return ad.offer.features.includes('elevator') || !elevatorValue;
+      }).filter(function (ad) {
+        return ad.offer.features.includes('conditioner') || !conditionerValue;
+      })
+      .slice(0, 5);
     window.drawSimilarAds(filteredAds);
-  });
+  };
+
+  var debouncedApplyFilters = debounce(applyFilters, 500);
+
+  mapFilterHousingType.addEventListener('change', debouncedApplyFilters);
+  mapFilterPrice.addEventListener('change', debouncedApplyFilters);
+  mapFilterHousingRooms.addEventListener('change', debouncedApplyFilters);
+  mapFilterHousingGuests.addEventListener('change', debouncedApplyFilters);
+  mapFilterWifi.addEventListener('change', debouncedApplyFilters);
+  mapFilterDishwasher.addEventListener('change', debouncedApplyFilters);
+  mapFilterParking.addEventListener('change', debouncedApplyFilters);
+  mapFilterWasher.addEventListener('change', debouncedApplyFilters);
+  mapFilterElevator.addEventListener('change', debouncedApplyFilters);
+  mapFilterConditioner.addEventListener('change', debouncedApplyFilters);
+
 
 })(window.MAP_PIN_WIDTH, window.MAP_PIN_HEIGHT);
