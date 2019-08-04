@@ -5,6 +5,7 @@
   var MAP_PIN_WIDTH = 50;
   var MAP_PIN_HEIGHT = 70;
   var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
   var MAX_NUMBER_OF_PINS_ON_MAP = 5;
   var WIDTH_OF_PHOTO = 45;
   var HEIGHT_OF_PHOTO = 40;
@@ -129,6 +130,12 @@
 
       adsElement.addEventListener('click', function () {
         showMoreInfoPopup(ad);
+      });
+
+      adsElement.addEventListener('keydown', function (evt) {
+        if (evt.keyCode === 13) {
+          showMoreInfoPopup(ad);
+        }
       });
 
       mapPins.appendChild(adsElement);
@@ -263,6 +270,22 @@
   mapFilterWasher.addEventListener('change', onFiltersUpdated);
   mapFilterElevator.addEventListener('change', onFiltersUpdated);
   mapFilterConditioner.addEventListener('change', onFiltersUpdated);
+
+  var onCheckboxKeyDown = function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      var targetCheckbox = evt.target;
+
+      targetCheckbox.checked = !targetCheckbox.checked;
+      onFiltersUpdated();
+    }
+  };
+
+  mapFilterWifi.addEventListener('keydown', onCheckboxKeyDown);
+  mapFilterDishwasher.addEventListener('keydown', onCheckboxKeyDown);
+  mapFilterParking.addEventListener('keydown', onCheckboxKeyDown);
+  mapFilterWasher.addEventListener('keydown', onCheckboxKeyDown);
+  mapFilterElevator.addEventListener('keydown', onCheckboxKeyDown);
+  mapFilterConditioner.addEventListener('keydown', onCheckboxKeyDown);
 
 
   window.map = {

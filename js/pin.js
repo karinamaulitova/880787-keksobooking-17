@@ -4,6 +4,7 @@
   var Y_TOP_BORDER = 130;
   var Y_BOTTOM_BORDER = 630 - 7;
   var PIN_ARROW_HEIGHT = 20;
+  var ENTER_KEYCODE = 13;
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPinMainRect = mapPinMain.getBoundingClientRect();
   var mapPinMainWidth = mapPinMainRect.width;
@@ -16,6 +17,12 @@
     var addressInput = document.querySelector('#address');
     addressInput.value = x + ',' + y;
   };
+
+  mapPinMain.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      window.main.activateKeksobooking();
+    }
+  });
 
 
   mapPinMain.addEventListener('mousedown', function (evt) {
