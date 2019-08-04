@@ -2,6 +2,8 @@
 (function () {
   var form = document.querySelector('.ad-form');
   var SEND_URL = 'https://js.dump.academy/keksobooking';
+  var AVATAR_PLACEHOLDER_URL = 'img/muffin-grey.svg';
+  var OFFER_IMG_ALT = 'Фотография жилья для объявления';
   var ESC_KEYCODE = 27;
 
   var activateAdForm = function () {
@@ -149,6 +151,62 @@
     var formData = new FormData(form);
     window.load.sendFormData(SEND_URL, formData, handelFormSubmitSuccess, handleFormSubmitError);
   });
+
+  var avatarElement = document.querySelector('.ad-form-header__preview img');
+  var avatarInput = document.querySelector('#avatar');
+  avatarInput.multiple = false;
+  avatarInput.accept = 'image/*';
+  var onAvatarInputChange = function (evt) {
+    var imageFile = evt.target.files[0];
+
+    if (imageFile) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarElement.src = reader.result;
+      });
+
+      reader.readAsDataURL(imageFile);
+    } else {
+      avatarElement.src = AVATAR_PLACEHOLDER_URL;
+    }
+  };
+
+  avatarInput.addEventListener('change', onAvatarInputChange);
+
+  var offerPhotoInput = document.querySelector('#images');
+  var offerPhotosContainerElement = document.querySelector('.ad-form__photo-container');
+  offerPhotoInput.accept = 'image/*';
+  offerPhotoInput.multiple = true;
+
+  var cleanOfferPhotosContainer = function () {
+    var offerPhotos = offerPhotosContainerElement.querySelectorAll('.ad-form__photo');
+    offerPhotos.forEach(function (photoElement) {
+      photoElement.remove();
+    });
+  };
+
+  var onOfferPhotoInputChange = function (evt) {
+    var imageFiles = evt.target.files;
+    cleanOfferPhotosContainer();
+    Array.from(imageFiles).forEach(function (imageFile) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        var imagePreviewContainerElement = document.createElement('div');
+        var imagePreviewElement = document.createElement('img');
+        imagePreviewElement.classList.add('ad-form__photo');
+        imagePreviewElement.src = reader.result;
+        imagePreviewElement.alt = OFFER_IMG_ALT;
+        imagePreviewContainerElement.appendChild(imagePreviewElement);
+        offerPhotosContainerElement.appendChild(imagePreviewContainerElement);
+      });
+
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
+  offerPhotoInput.addEventListener('change', onOfferPhotoInputChange);
 
   window.form = {
     activateAdForm: activateAdForm,
