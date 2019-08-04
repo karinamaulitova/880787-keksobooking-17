@@ -4,14 +4,14 @@
   var SEND_URL = 'https://js.dump.academy/keksobooking';
   var ESC_KEYCODE = 27;
 
-  window.activateAdForm = function () {
+  var activateAdForm = function () {
     document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
       element.disabled = false;
     });
     form.classList.remove('ad-form--disabled');
   };
 
-  window.deactivateAdForm = function () {
+  var deactivateAdForm = function () {
     form.reset();
     document.querySelectorAll('.ad-form fieldset').forEach(function (element) {
       element.disabled = true;
@@ -23,7 +23,7 @@
   var resetButton = document.querySelector('.ad-form__reset');
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    window.deActivateKeksobooking();
+    window.main.deActivateKeksobooking();
   });
 
   var typeSelect = document.querySelector('#type');
@@ -65,7 +65,7 @@
   var capacitySelect = document.querySelector('#capacity');
   var numberOfRoomsSelect = document.querySelector('#room_number');
 
-  var validateNumberOfRooms = function () {
+  var onNumberOfRoomsSelectValidate = function () {
     if (numberOfRoomsSelect.value < capacitySelect.value) {
       numberOfRoomsSelect.setCustomValidity('Слишком мало комнат');
     } else {
@@ -73,15 +73,15 @@
     }
   };
 
-  numberOfRoomsSelect.addEventListener('change', validateNumberOfRooms);
+  numberOfRoomsSelect.addEventListener('change', onNumberOfRoomsSelectValidate);
 
-  capacitySelect.addEventListener('change', validateNumberOfRooms);
+  capacitySelect.addEventListener('change', onNumberOfRoomsSelectValidate);
 
-  validateNumberOfRooms();
+  onNumberOfRoomsSelectValidate();
 
 
   var handelFormSubmitSuccess = function () {
-    window.deActivateKeksobooking();
+    window.main.deActivateKeksobooking();
     var successSubmitTemplate = document.querySelector('#success')
       .content
       .querySelector('.success');
@@ -91,23 +91,23 @@
 
     var closeSuccessPopup = function () {
       successSubmitElement.remove();
-      document.removeEventListener('keydown', handleDocumentKeydown);
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', onDocumentKeydown);
+      document.removeEventListener('click', onDocumentClick);
     };
 
-    var handleDocumentKeydown = function (evt) {
+    var onDocumentKeydown = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         closeSuccessPopup();
       }
     };
 
-    var handleDocumentClick = function (evt) {
+    var onDocumentClick = function (evt) {
       evt.preventDefault();
       closeSuccessPopup();
     };
 
-    document.addEventListener('keydown', handleDocumentKeydown);
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('click', onDocumentClick);
   };
 
   var handleFormSubmitError = function () {
@@ -119,17 +119,17 @@
 
     var closeErrorPopup = function () {
       errorElement.remove();
-      document.removeEventListener('keydown', handleDocumentKeydown);
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', onDocumentKeydown);
+      document.removeEventListener('click', onDocumentCLick);
     };
 
-    var handleDocumentKeydown = function (evt) {
+    var onDocumentKeydown = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         closeErrorPopup();
       }
     };
 
-    var handleDocumentClick = function (evt) {
+    var onDocumentCLick = function (evt) {
       evt.preventDefault();
       closeErrorPopup();
     };
@@ -138,8 +138,8 @@
       closeErrorPopup();
     });
 
-    document.addEventListener('keydown', handleDocumentKeydown);
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('click', onDocumentCLick);
 
     document.querySelector('main').appendChild(errorElement);
   };
@@ -147,7 +147,12 @@
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     var formData = new FormData(form);
-    window.sendFormData(SEND_URL, formData, handelFormSubmitSuccess, handleFormSubmitError);
+    window.load.sendFormData(SEND_URL, formData, handelFormSubmitSuccess, handleFormSubmitError);
   });
+
+  window.form = {
+    activateAdForm: activateAdForm,
+    deactivateAdForm: deactivateAdForm
+  };
 
 })();

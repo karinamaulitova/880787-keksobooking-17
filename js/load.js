@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.load = function (url, onSuccess, onError) {
+  var loadData = function (url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -28,7 +28,7 @@
     xhr.send();
   };
 
-  window.sendFormData = function (url, formData, onSuccess, onError) {
+  var sendFormData = function (url, formData, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -53,5 +53,10 @@
 
     xhr.open('POST', url);
     xhr.send(formData);
+  };
+
+  window.load = {
+    loadData: loadData,
+    sendFormData: sendFormData
   };
 })();

@@ -1,19 +1,16 @@
 'use strict';
 
-var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
-
-
 (function () {
-
+  var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
   var keksobookingActive = false;
 
-  window.activateKeksobooking = function () {
+  var activateKeksobooking = function () {
     if (!keksobookingActive) {
-      window.load(SERVER_URL, function (ads) {
-        window.activateMap();
-        window.activateAdForm();
-        window.setSimilarAdsFromServer(ads);
-        window.drawSimilarAds(ads.slice(0, 5));
+      window.load.loadData(SERVER_URL, function (ads) {
+        window.map.activateMap();
+        window.form.activateAdForm();
+        window.map.setSimilarAdsFromServer(ads);
+        window.map.drawSimilarAds(ads.slice(0, window.map.MAX_NUMBER_OF_PINS_ON_MAP));
         keksobookingActive = true;
       }, function (message) {
         var errorTemplate = document.querySelector('#error').content.querySelector('.error');
@@ -23,7 +20,7 @@ var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
         var errorButton = errorElement.querySelector('.error__button');
         errorButton.addEventListener('click', function () {
           errorElement.remove();
-          window.activateKeksobooking();
+          activateKeksobooking();
         });
 
         document.querySelector('main').appendChild(errorElement);
@@ -31,14 +28,19 @@ var SERVER_URL = 'https://js.dump.academy/keksobooking/data';
     }
   };
 
-  window.deActivateKeksobooking = function () {
+  var deActivateKeksobooking = function () {
     if (keksobookingActive) {
-      window.deactivateMap();
-      window.removeSimilarAds();
-      window.deactivateAdForm();
-      window.resetMapPin();
+      window.map.deactivateMap();
+      window.map.removeSimilarAds();
+      window.form.deactivateAdForm();
+      window.pin.resetMapPin();
       keksobookingActive = false;
     }
+  };
+
+  window.main = {
+    activateKeksobooking: activateKeksobooking,
+    deActivateKeksobooking: deActivateKeksobooking
   };
 
 })();

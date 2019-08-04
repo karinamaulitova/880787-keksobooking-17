@@ -1,13 +1,18 @@
 'use strict';
-window.MAP_PIN_WIDTH = 50;
-window.MAP_PIN_HEIGHT = 70;
 
+(function () {
 
-(function (MAP_PIN_WIDTH, MAP_PIN_HEIGHT) {
+  var MAP_PIN_WIDTH = 50;
+  var MAP_PIN_HEIGHT = 70;
+  var ESC_KEYCODE = 27;
+  var MAX_NUMBER_OF_PINS_ON_MAP = 5;
+  var WIDTH_OF_PHOTO = 45;
+  var HEIGHT_OF_PHOTO = 40;
+  var MAX_LOW_PRICE = 10000;
+  var MIN_HIGH_PRICE = 50000;
   var similarAdsElements = [];
   var similarAdsFromServer = [];
   var currentlyOpenPopupElement = null;
-  var ESC_KEYCODE = 27;
 
   var mapBlock = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -71,15 +76,17 @@ window.MAP_PIN_HEIGHT = 70;
       var item = document.createElement('img');
       item.setAttribute('src', photoItem);
       item.setAttribute('class', 'popup__photo');
-      item.setAttribute('width', '45');
-      item.setAttribute('height', '40');
+      item.setAttribute('width', WIDTH_OF_PHOTO.toString());
+      item.setAttribute('height', HEIGHT_OF_PHOTO.toString());
       item.setAttribute('alt', 'Фотография жилья');
       photosContainer.appendChild(item);
     });
 
     moreInfoAdElement.querySelector('.popup__avatar').src = moreInfoAd.author.avatar;
 
-    moreInfoAdElement.querySelector('.popup__close').addEventListener('click', closePopup);
+    var onPopupCloseClick = closePopup;
+
+    moreInfoAdElement.querySelector('.popup__close').addEventListener('click', onPopupCloseClick);
 
     mapBlock.insertBefore(moreInfoAdElement, mapFiltersContainer);
     currentlyOpenPopupElement = moreInfoAdElement;
@@ -98,12 +105,12 @@ window.MAP_PIN_HEIGHT = 70;
     }
   });
 
-  window.setSimilarAdsFromServer = function (ads) {
+  var setSimilarAdsFromServer = function (ads) {
     similarAdsFromServer = ads;
   };
 
 
-  window.drawSimilarAds = function (ads) {
+  var drawSimilarAds = function (ads) {
 
     var mapPins = document.querySelector('.map__pins');
     var mapPin = document.querySelector('#pin')
@@ -136,14 +143,14 @@ window.MAP_PIN_HEIGHT = 70;
 
   };
 
-  window.removeSimilarAds = function () {
+  var removeSimilarAds = function () {
     similarAdsElements.forEach(function (element) {
       element.remove();
     });
     similarAdsElements = [];
   };
 
-  window.activateMap = function () {
+  var activateMap = function () {
     document.querySelector('.map').classList.remove('map--faded');
 
     document.querySelectorAll('.map__filter').forEach(function (element) {
@@ -153,7 +160,7 @@ window.MAP_PIN_HEIGHT = 70;
     document.querySelector('.map__features').disabled = false;
   };
 
-  window.deactivateMap = function () {
+  var deactivateMap = function () {
     closePopup();
 
     document.querySelector('.map').classList.add('map--faded');
@@ -184,7 +191,6 @@ window.MAP_PIN_HEIGHT = 70;
 
   };
 
-
   var mapFilterHousingType = document.querySelector('#housing-type');
   var mapFilterPrice = document.querySelector('#housing-price');
   var mapFilterHousingRooms = document.querySelector('#housing-rooms');
@@ -197,7 +203,7 @@ window.MAP_PIN_HEIGHT = 70;
   var mapFilterConditioner = document.querySelector('#filter-conditioner');
 
   var applyFilters = function () {
-    window.removeSimilarAds();
+    removeSimilarAds();
     closePopup();
     var housingTypeValue = mapFilterHousingType.value;
     var priceValue = mapFilterPrice.value;
@@ -215,11 +221,11 @@ window.MAP_PIN_HEIGHT = 70;
       }).filter(function (ad) {
         switch (priceValue) {
           case 'low':
-            return ad.offer.price < 10000;
+            return ad.offer.price < MAX_LOW_PRICE;
           case 'middle':
-            return ad.offer.price >= 10000 && ad.offer.price < 50000;
+            return ad.offer.price >= MAX_LOW_PRICE && ad.offer.price < MIN_HIGH_PRICE;
           case 'high':
-            return ad.offer.price >= 50000;
+            return ad.offer.price >= MIN_HIGH_PRICE;
           case 'any':
           default:
             return true;
@@ -241,22 +247,30 @@ window.MAP_PIN_HEIGHT = 70;
       }).filter(function (ad) {
         return ad.offer.features.includes('conditioner') || !conditionerValue;
       })
-      .slice(0, 5);
-    window.drawSimilarAds(filteredAds);
+      .slice(0, MAX_NUMBER_OF_PINS_ON_MAP);
+    drawSimilarAds(filteredAds);
   };
 
-  var debouncedApplyFilters = debounce(applyFilters, 500);
+  var onFiltersUpdated = debounce(applyFilters, 500);
 
-  mapFilterHousingType.addEventListener('change', debouncedApplyFilters);
-  mapFilterPrice.addEventListener('change', debouncedApplyFilters);
-  mapFilterHousingRooms.addEventListener('change', debouncedApplyFilters);
-  mapFilterHousingGuests.addEventListener('change', debouncedApplyFilters);
-  mapFilterWifi.addEventListener('change', debouncedApplyFilters);
-  mapFilterDishwasher.addEventListener('change', debouncedApplyFilters);
-  mapFilterParking.addEventListener('change', debouncedApplyFilters);
-  mapFilterWasher.addEventListener('change', debouncedApplyFilters);
-  mapFilterElevator.addEventListener('change', debouncedApplyFilters);
-  mapFilterConditioner.addEventListener('change', debouncedApplyFilters);
+  mapFilterHousingType.addEventListener('change', onFiltersUpdated);
+  mapFilterPrice.addEventListener('change', onFiltersUpdated);
+  mapFilterHousingRooms.addEventListener('change', onFiltersUpdated);
+  mapFilterHousingGuests.addEventListener('change', onFiltersUpdated);
+  mapFilterWifi.addEventListener('change', onFiltersUpdated);
+  mapFilterDishwasher.addEventListener('change', onFiltersUpdated);
+  mapFilterParking.addEventListener('change', onFiltersUpdated);
+  mapFilterWasher.addEventListener('change', onFiltersUpdated);
+  mapFilterElevator.addEventListener('change', onFiltersUpdated);
+  mapFilterConditioner.addEventListener('change', onFiltersUpdated);
 
 
-})(window.MAP_PIN_WIDTH, window.MAP_PIN_HEIGHT);
+  window.map = {
+    MAX_NUMBER_OF_PINS_ON_MAP: MAX_NUMBER_OF_PINS_ON_MAP,
+    drawSimilarAds: drawSimilarAds,
+    removeSimilarAds: removeSimilarAds,
+    setSimilarAdsFromServer: setSimilarAdsFromServer,
+    activateMap: activateMap,
+    deactivateMap: deactivateMap
+  };
+})();

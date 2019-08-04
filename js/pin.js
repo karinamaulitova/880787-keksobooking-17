@@ -1,10 +1,13 @@
 'use strict';
 
-(function (activateKeksobooking) {
+(function () {
+  var Y_TOP_BORDER = 130;
+  var Y_BOTTOM_BORDER = 630 - 7;
+  var PIN_ARROW_HEIGHT = 20;
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPinMainRect = mapPinMain.getBoundingClientRect();
   var mapPinMainWidth = mapPinMainRect.width;
-  var mapPinMainHeight = mapPinMainRect.height + 20;
+  var mapPinMainHeight = mapPinMainRect.height + PIN_ARROW_HEIGHT;
   var initialMapPinTop = mapPinMain.offsetTop;
   var initialMapPinLeft = mapPinMain.offsetLeft;
   var defaultAddressX = initialMapPinLeft + mapPinMainWidth / 2;
@@ -23,7 +26,7 @@
       y: evt.clientY
     };
 
-    activateKeksobooking();
+    window.main.activateKeksobooking();
 
     var onMouseMove = function (moveEvt) {
       var shift = {
@@ -43,8 +46,6 @@
 
 
       var rightBorder = mapRect.width - mapPinMainWidth;
-      var Y_TOP_BORDER = 130;
-      var Y_BOTTOM_BORDER = 630 - 7;
 
       if (newTopCoordinate > Y_BOTTOM_BORDER) {
         newTopCoordinate = Y_BOTTOM_BORDER;
@@ -76,12 +77,16 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  window.resetMapPin = function () {
+  var resetMapPin = function () {
     setAddress(defaultAddressX, defaultAddressY);
     mapPinMain.style.top = initialMapPinTop + 'px';
     mapPinMain.style.left = initialMapPinLeft + 'px';
   };
 
-  window.resetMapPin();
+  resetMapPin();
 
-})(window.activateKeksobooking);
+
+  window.pin = {
+    resetMapPin: resetMapPin
+  };
+})();
